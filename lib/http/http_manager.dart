@@ -110,7 +110,7 @@ class HttpManager {
   ///
   ///
   String _getFullUrl(dynamic urlSuffix) {
-    return "${httpBuilder.baseUrl}${urlSuffix}";
+    return "${httpBuilder.baseUrl}$urlSuffix";
   }
 
   ///

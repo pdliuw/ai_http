@@ -1,4 +1,5 @@
 part of ai_http;
+
 ///
 /// Content type.
 class ContentType {

@@ -148,7 +148,7 @@ class HttpContext {
         parameters: newRequestRule.parameters,
       ));
     } catch (e) {
-      print("${e}");
+      print("$e");
       if (e is SocketException) {
         osError = e.osError;
       }

@@ -57,7 +57,7 @@ class RequestOption {
 
   get encoding => this._encoding;
 
-  set encoding(Encoding encoding){
+  set encoding(Encoding encoding) {
     this._encoding = encoding;
   }
 
