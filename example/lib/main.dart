@@ -1,42 +1,232 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:airoute/airoute.dart';
 import 'package:ai_http/ai_http.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  ///
+  /// 配置Http
+  AiHttp.globalConfig(
+    baseUrl: "https://www.baidu.com/",
+    requestInterceptor: RequestInterceptorWell(),
+    responseInterceptor: ResponseInterceptorWell(),
+  );
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  runApp(
+    ///
+    /// 配置Airoute
+    Airoute.createMaterialApp(
+      home: MyHomePage(),
+      routes: <String, AirouteBuilder>{
+        "/LaunchPage": () => MyHomePage(),
+        "/SecondPage": () => MyHomePage(),
+      },
+    ),
+  );
+}
+
+///
+/// RequestInterceptorWell
+class RequestInterceptorWell extends RequestInterceptor {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+  Future<RequestRule> interceptor(RequestRule requestRule) async {
+    /*
+    前
+     */
+    RequestRule oldRequestRule = requestRule;
+    /*
+    处理拼接地址
+     */
+    if (oldRequestRule.url is String) {
+      String requestUrl = oldRequestRule.url;
+
+      String newRequestUrl = requestUrl.replaceFirst("app", "sh-app");
+
+      //更新URL
+      oldRequestRule.url = newRequestUrl;
+    }
+
+    /*
+    全局处理Token
+     */
+    //Token
+    Map<String, String> tokenHeader;
+    //获取
+    String userInfoString = "not null value";
+
+    if (userInfoString != null && userInfoString.isNotEmpty) {
+      var userInfo = {
+        "access_token": "",
+        "token_type": "",
+      };
+      String accessToken = userInfo['access_token'];
+      String tokenType = userInfo['token_type'];
+      String first = tokenType.substring(0, 1);
+      String firstUpper = first.toUpperCase();
+      String tokenTypeFull = tokenType.replaceRange(0, 1, firstUpper);
+      //access_token + "空格" + token_type
+      String token = "$tokenTypeFull $accessToken";
+      tokenHeader = {
+        "Authorization": token,
+      };
+    }
+    //添加
+    Map<String, String> newHeaders = {};
+    if (tokenHeader != null) {
+      if (oldRequestRule.headers != null) {
+        if (oldRequestRule.headers['access_token'] != null) {
+        } else {
+          newHeaders.addAll(tokenHeader);
+        }
+      } else {
+        newHeaders.addAll(tokenHeader);
+      }
+    }
+    if (oldRequestRule.headers != null) {
+      newHeaders.addAll(oldRequestRule.headers);
+    }
+    RequestRule newRequestRule = RequestRule(
+        url: oldRequestRule.url,
+        headers: newHeaders,
+        parameters: oldRequestRule.parameters,
+        body: oldRequestRule.body);
+
+    print("NewRequstRule header length:${newRequestRule.headers.length}");
+    print("RequestRule:${oldRequestRule.toString()}");
+    print("NewRquestRule:${newRequestRule.toString()}");
+
+    return requestRule;
+  }
+}
+
+///
+/// ResponseInterceptorWell
+class ResponseInterceptorWell extends ResponseInterceptor {
+  @override
+  interceptor(ResponseInterceptorModel responseInterceptorModel) {
+    Response response = responseInterceptorModel.response;
+    ResponseCallback responseCallback =
+        responseInterceptorModel.responseCallback;
+    OSError osError = responseInterceptorModel.osError;
+
+    print(
+        "response:statusCode=${response.statusCode}, message=${response.reasonPhrase}, isRedirect=${response.isRedirect}");
+    print("response body:${jsonEncode(response.body)}");
+    print("response body-origin:${response.body}");
+
+    int statusCodeNetLevel = 0;
+    int statusCodeBusinessLevel = 0;
+    String messageNetLevel = "";
+    String messageBusinessLevel = "";
+    dynamic responseObjectOfBusiness = {};
+
+    if (osError == null) {
+      /*
+        无异常
+         */
+      responseObjectOfBusiness = jsonDecode(response.body);
+      //code.
+      statusCodeNetLevel = response.statusCode;
+      statusCodeBusinessLevel = responseObjectOfBusiness['status'];
+      //message.
+      messageNetLevel = response.reasonPhrase;
+      messageBusinessLevel = responseObjectOfBusiness['message'];
+    } else {
+      /*
+        有异常
+         */
+      int errorCode = osError.errorCode;
+      String message = "${osError.message}";
+      if (errorCode == 101) {
+        message = "网络未连接";
+      } else if (errorCode == HttpStatus.networkConnectTimeoutError &&
+          errorCode == 110) {
+        message = "网络连接超时";
+      } else if (errorCode == HttpStatus.internalServerError) {
+        message = "内部服务器异常";
+      }
+      statusCodeNetLevel = errorCode;
+      messageNetLevel = message;
+
+      responseObjectOfBusiness = {
+        "message": messageNetLevel,
+        "status": statusCodeNetLevel
+      };
+    }
+
+    /*
+    Toast
+    */
+    String toastInfo = "";
+    if (messageNetLevel != null && messageNetLevel.isNotEmpty) {
+      toastInfo = messageNetLevel;
+      if (messageBusinessLevel != null && messageBusinessLevel.isNotEmpty) {
+        toastInfo = messageBusinessLevel;
+      }
+    }
+    print("toastInfo:$toastInfo");
+    if (toastInfo.isNotEmpty) {
+      /*
+      message、reasonPhrase 都不为空的时候再提示
+      */
+      if (toastInfo != 'OK') {
+        print("$toastInfo");
+      }
+    }
+
+    /*
+    Response model
+    */
+    ResponseModel responseModel = ResponseModel(
+      statusCode: statusCodeNetLevel,
+      message: toastInfo,
+      data: responseObjectOfBusiness,
     );
+
+    /*
+    打印数据
+     */
+
+    /*
+    Http code
+    */
+    if (statusCodeNetLevel == 200) {
+      /*
+      Business code
+      */
+      if (statusCodeBusinessLevel == 200) {
+        /*
+        Successful
+        */
+        responseCallback.successfulCallback(
+          responseModel,
+        );
+      } else {
+        /*
+        Failure
+        */
+        responseCallback.failureCallback(
+          responseModel,
+        );
+      }
+    } else if (statusCodeNetLevel == 401) {
+    } else {
+      /*
+      Failure
+      */
+      responseCallback.failureCallback(
+        responseModel,
+      );
+    }
+
+    return false;
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -60,36 +250,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("ai_http example"),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
@@ -105,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.refresh),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
