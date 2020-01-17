@@ -139,42 +139,13 @@ class ResponseInterceptorWell extends ResponseInterceptor {
 
 ```
 
-### 2.调用/应用
-
-*1、跳转新页面
-
-```
-
-              Airoute.pushNamed(routeName: "/routeName");
-
-```
-
-*2、关闭页面
-
-```
-
-              Airoute.pop();
-
-```
-
-*3、跳转新页面，并添加动画
-
-```
-
-              Airoute.pushNamedWithAnimation(
-                  routeName: "/routeName",
-                  routePageAnimation: AirouteTransition.Slide);
-
-```
-
-*4、更多用法[点击，查看更多](https://github.com/pdliuw/ai_http/blob/master/README_DETAIL.md)
 
 ### 待办
 
 
 
 
-## 证书
+### 证书
 
 ```
 
