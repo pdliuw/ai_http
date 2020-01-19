@@ -146,7 +146,9 @@ Response interceptor
 
 ```
 
-### 2.Get
+### 3.Request method:
+
+#### 1.Get
 
 ```
 
@@ -170,7 +172,7 @@ Response interceptor
 
 ```
 
-### 3.Post
+#### 2.Post
 
 ```
 
@@ -194,7 +196,7 @@ Response interceptor
 
 ```
 
-### 3.Delete
+#### 3.Delete
 
 ```
 

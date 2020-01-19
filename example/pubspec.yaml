@@ -27,8 +27,8 @@ dependencies:
   # airoute package
   airoute: ^0.1.7
 
-  ai_http:
-    path: ../
+  # http package
+  ai_http: ^0.1.0
 
 dev_dependencies:
   flutter_test:
