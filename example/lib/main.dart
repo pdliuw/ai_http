@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:example/business/test/TestPage.dart';
 import 'package:flutter/material.dart';
 import 'package:airoute/airoute.dart';
 import 'package:ai_http/ai_http.dart';
@@ -18,10 +19,11 @@ void main() {
     ///
     /// 配置Airoute
     Airoute.createMaterialApp(
-      home: MyHomePage(),
+      home: TestPage(),
       routes: <String, AirouteBuilder>{
         "/LaunchPage": () => MyHomePage(),
         "/SecondPage": () => MyHomePage(),
+        "/TestPage": () => TestPage(),
       },
     ),
   );

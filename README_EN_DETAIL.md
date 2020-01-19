@@ -4,31 +4,31 @@
 
 -----
 
-|[English Document](https://github.com/pdliuw/ai_http/blob/master/README_EN.md)|[中文文档](https://github.com/pdliuw/ai_http)|
+|[English Document](https://github.com/pdliuw/ai_http/blob/master/README-EN.md)|[中文文档](https://github.com/pdliuw/ai_http)|
 |:-|:-|
 
-## 我们的宗旨是：帮助开发者更加便利开发、切身体会编程之美！
+## Our aim is to help developers make development more convenient and experience the beauty of programming!
 
 ### ai_http:
 
 [![pub package](https://img.shields.io/pub/v/ai_http.svg)](https://pub.dev/packages/ai_http)
 
-*1、支持：RESTful 
+*1、Support：RESTful 
 
-*2、支持：拦截器
+*2、Support：Interceptor
 
 *3、....
 
 [ai_http](https://github.com/pdliuw/ai_http) 在[项目](https://github.com/flutter-app-sample/flutter_app_sample)中的实战应用[flutter sample](https://github.com/flutter-app-sample/flutter_app_sample)
 
 
-## 1.安装
+## 1.Installation
 
-使用当前包作为依赖库
+Use the current package as a dependent library
 
-### 1. 依赖此库
+### 1. Rely on this library
 
-在文件 'pubspec.yaml' 中添加
+Add in file 'pubspec.yaml'
 
 [![pub package](https://img.shields.io/pub/v/ai_http.svg)](https://pub.dev/packages/ai_http)
 
@@ -40,7 +40,7 @@ dependencies:
 
 ```
 
-或以这种方式添加
+or
 
 ```
 
@@ -51,9 +51,9 @@ dependencies:
 
 ```
 
-### 2. 安装此库
+### 2. Install this library
 
-你可以通过下面的命令行来安装此库
+You can install this library via the command line below
 
 ```
 
@@ -61,12 +61,12 @@ $ flutter pub get
 
 
 ```
+You can also perform the above steps through the visual operation through the project development tool
 
-你也可以通过项目开发工具通过可视化操作来执行上述步骤
 
-### 3. 导入此库
+### 3. Import this library
 
-现在，在你的Dart编辑代码中，你可以使用：
+Now, in your Dart editing code, you can use:
 
 ```
 
@@ -74,11 +74,11 @@ import 'package:ai_http/ai_http.dart';
 
 ```
 
-## 2.使用
+## 2.Usage
 
-### 1.全局配置
+### 1.Global configuration
 
-* 在你的项目入口'main.dart'中配置：
+Configure in your project entry 'main.dart':
 
 
 ```
@@ -86,9 +86,9 @@ import 'package:ai_http/ai_http.dart';
 
 void main() {
   ///
-  /// 配置Http
+  /// config ai_http
   AiHttp.globalConfig(
-    baseUrl: "https://www.baidu.com/",
+    baseUrl: "https://www.example.com/",
     requestInterceptor: RequestInterceptorWell(),
     responseInterceptor: ResponseInterceptorWell(),
   );
@@ -101,9 +101,9 @@ void main() {
 
 ```
 
-### 2.拦截器：
+### 2.Interceptor：
 
-请求拦截器
+Request interceptor
 
 ```
 
@@ -122,7 +122,7 @@ void main() {
 
 ```
 
-响应拦截器
+Response interceptor
 
 ```
     
@@ -219,14 +219,14 @@ void main() {
 ```
 
 
-### 待办
+### TODO
 
 * 1. ......
 * 2. ......
 * 3. ......
 
 
-### 证书
+### LICENSE
 
 ```
 

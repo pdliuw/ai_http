@@ -4,7 +4,7 @@
 
 -----
 
-|[English Document](https://github.com/pdliuw/ai_http/blob/master/README-EN.md)|[中文文档](https://github.com/pdliuw/ai_http)|
+|[English Document](https://github.com/pdliuw/ai_http/blob/master/README_EN.md)|[中文文档](https://github.com/pdliuw/ai_http)|
 |:-|:-|
 
 ## 我们的宗旨是：帮助开发者更加便利开发、切身体会编程之美！
@@ -76,9 +76,10 @@ import 'package:ai_http/ai_http.dart';
 
 ## 2.使用
 
-### 1.在你的项目入口'main.dart'中配置：
+### 1.全局配置
 
-ai_http 全局配置
+* 在你的项目入口'main.dart'中配置：
+
 
 ```
 
@@ -100,49 +101,131 @@ void main() {
 
 ```
 
-```
+### 2.拦截器：
 
-
-///
-/// RequestInterceptorWell
-class RequestInterceptorWell extends RequestInterceptor {
-  @override
-  Future<RequestRule> interceptor(RequestRule requestRule) async {
-    //do something
-
-    return requestRule;
-  }
-}
-
+请求拦截器
 
 ```
 
-```
-
-
-///
-/// ResponseInterceptorWell
-class ResponseInterceptorWell extends ResponseInterceptor {
-  @override
-  interceptor(ResponseInterceptorModel responseInterceptorModel) {
-    Response response = responseInterceptorModel.response;
-    ResponseCallback responseCallback =
-        responseInterceptorModel.responseCallback;
-    OSError osError = responseInterceptorModel.osError;
-
-    //do something
     
-    return false;
-  }
-}
+    ///
+    /// RequestInterceptorWell
+    class RequestInterceptorWell extends RequestInterceptor {
+      @override
+      Future<RequestRule> interceptor(RequestRule requestRule) async {
+        //do something
+    
+        return requestRule;
+      }
+    }
 
 
 ```
+
+响应拦截器
+
+```
+    
+    
+    ///
+    /// ResponseInterceptorWell
+    class ResponseInterceptorWell extends ResponseInterceptor {
+      @override
+      interceptor(ResponseInterceptorModel responseInterceptorModel) {
+        Response response = responseInterceptorModel.response;
+        ResponseCallback responseCallback =
+            responseInterceptorModel.responseCallback;
+        OSError osError = responseInterceptorModel.osError;
+    
+        //do something
+        
+        return false;
+      }
+    }
+    
+
+```
+
+### 2.Get
+
+```
+
+              AiHttp.get(
+                requestRule: RequestRule(
+                  url: "",
+                  headers: {},
+                  parameters: {},
+                ),
+                responseCallback: ResponseCallback(
+                  successfulCallback: (ResponseModel successfulModel) {
+                    //successful
+                    //do something
+                  },
+                  failureCallback: (ResponseModel failureModel) {
+                    //failure
+                    //do something
+                  },
+                ),
+              );
+
+```
+
+### 3.Post
+
+```
+
+              AiHttp.post(
+                requestRule: RequestRule(
+                  url: "",
+                  headers: {},
+                  body: {},
+                ),
+                responseCallback: ResponseCallback(
+                  successfulCallback: (ResponseModel successfulModel) {
+                    //successful
+                    //do something
+                  },
+                  failureCallback: (ResponseModel failureModel) {
+                    //failure
+                    //do something
+                  },
+                ),
+              );
+
+```
+
+### 3.Delete
+
+```
+
+              AiHttp.delete(
+                requestRule: RequestRule(
+                  url: "",
+                  headers: {},
+                  parameters: {},
+                ),
+                responseCallback: ResponseCallback(
+                  successfulCallback: (ResponseModel successfulModel) {
+                    //successful
+                    //do something
+                  },
+                  failureCallback: (ResponseModel failureModel) {
+                    //failure
+                    //do something
+                  },
+                ),
+              );
+
+```
+
+意犹未尽[点击，查看更多](https://github.com/pdliuw/ai_http/blob/master/README_DETAIL.md)
 
 
 ### 待办
 
-
+* 1. ......
+* 2. ......
+* 3. ......
 
 
 ### 证书
@@ -156,3 +239,4 @@ All rights reserved.
 
 ```
 
+[证书](https://github.com/pdliuw/ai_http/blob/master/LICENSE)
